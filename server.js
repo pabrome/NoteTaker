@@ -32,13 +32,11 @@ app.post("/api/notes", function(req, res) {
 });
 
 app.delete("/api/notes", function(req, res) {
-    noteTitle = req.body.title;
-    console.log(noteTitle)
+    noteNumber = req.body.noteNumber;
     noteData = JSON.parse(fs.readFileSync("db/db.json"));
-    noteData = noteData.filter(note => note.title != noteTitle);
+    noteData.splice(noteNumber,1)
     fs.writeFileSync("db/db.json",JSON.stringify(noteData))
 });
-
 
 app.listen(PORT, function() {
     console.log("App listening on PORT " + PORT);
