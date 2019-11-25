@@ -68,3 +68,8 @@ html, body {
   padding: 20px;
   cursor: pointer;
 }
+
+.col-4 {
+  height: 500px; 
+  overflow-y: scroll;
+}

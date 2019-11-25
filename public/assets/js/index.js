@@ -4,17 +4,13 @@ var $saveNoteBtn = $(".save-note");
 var $newNoteBtn = $(".new-note");
 var $noteList = $(".list-container .list-group");
 
-
-// activeNote is used to keep track of the note in the textarea
 var activeNote = {};
 
-// A function for getting all notes from the db
 var getNotes = function() {
-    return $.get("/api/notes")
+    return $.get("/api/notes");
 };
 
-// A function for saving a note to the db
-var saveNote = function(note) {
+var saveNote = async function(note) {
     $.ajax({
         url: "/api/notes",
         data: note,
@@ -22,19 +18,17 @@ var saveNote = function(note) {
     });
 };
 
-// A function for deleting a note from the db
 var deleteNote = function(number) {
     $.ajax({
         url: "/api/notes",
-        data: {noteNumber:number},
+        data: {noteNumber: number},
         method: "DELETE"
     });
 };
 
-// If there is an activeNote, display it, otherwise render empty inputs
 var renderActiveNote = function() {
-    $("#input").empty()
-    if (activeNote.length !== 'undefined'){
+    $("#input").empty();
+    if (jQuery.isEmptyObject(activeNote)) {
         $("<input>").attr({
             class: "note-title",
             type: "text",
@@ -45,6 +39,7 @@ var renderActiveNote = function() {
             class: "note-textarea",
             type: "test",
             id: "textInput",
+            size: "5",
             placeholder: "Note text"
         }).appendTo("#input");
         $("<button>").attr({
@@ -52,89 +47,76 @@ var renderActiveNote = function() {
             id: "saveButton"
         }).text("Save").appendTo("#input");
     }
-    else{
-        $("<div>").addClass("note-title").text(activeNote.title).appendTo("#input")
-        $("<input>").addClass("note-textarea").text(activeNote.text).appendTo("#input")
-    }
+    else {
+        $("<div>").addClass("note-title text-dark").text(activeNote.title).appendTo("#input");
+        $("<div>").addClass("note-textarea text-dark align-middle").text(activeNote.text).appendTo("#input");
+        $("<button>").attr({
+            type: "test",   
+            id: "newNoteButton"
+        }).text("Create new note").appendTo("#input");
+        $("#newNoteButton").on("click", handleNewNoteView);
+    };
     $("#saveButton").on("click", handleNoteSave);
 };
 
-// Get the note data from the inputs, save it to the db and update the view
-var handleNoteSave = function() {
+var handleNoteSave = async function() {
     note = {title:$("#titleInput").val(), text:$("#textInput").val()};
-    console.log(note)
     saveNote(note);
     getAndRenderNotes();
 };
 
-// Delete the clicked note
-var handleNoteDelete = function() {
+var handleNoteDelete = async function() {
     number = this.id.slice(this.id.length-1);
-    console.log(number);
+    console.log(number)
     deleteNote(number);
+    console.log("time to render")
     getAndRenderNotes();
 };
 
-// Sets the activeNote and displays it
 var handleNoteView = function() {
     noteNumber = this.id.slice(this.id.length-1);
-    activeNote = {title:$(`#title${noteNumber}`).val(), text: $(`#text${noteNumber}`).val()};
-    title = $("#title0").val();
-    console.log(noteNumber);
+    activeNote = {title:$(`#title${noteNumber}`).text(), text: $(`#text${noteNumber}`).text()};
+    renderActiveNote();
 };
 
-// Sets the activeNote to an empty object and allows the user to enter a new note
 var handleNewNoteView = function() {
     activeNote = {};
-    renderActiveNote()
+    renderActiveNote();
 };
 
-// If a note's title or text are empty, hide the save button
-// Or else show it
-var handleRenderSaveBtn = function() {
-  
-};
-
-// Render's the list of note titles
 var renderNoteList = function(noteData) {
-    $("#sidebar").empty()
+    $("#sidebar").empty();
     for (var x = 0; x < noteData.length; x++){
         $("<div>").attr({
             class: "list-group-item",
             id: "note"+x
         }).appendTo("#sidebar");
         $("<div>").attr({
-            class: "note-title",
+            class: "note-title text-dark",
             id: "title"+x
         }).text(noteData[x].title).appendTo("#note"+x);
         $("<div>").attr({
-            class: "note-textarea",
+            class: "note-textarea text-dark",
             id: "text"+x
         }).text(noteData[x].text).appendTo("#note"+x);
         $("<button>").attr({
             class: "deleteButton",
             id: "delete"+x
         }).text("Delete").appendTo("#note"+x);
-    }
-    $(".deleteButton").on("click", handleNoteDelete)
-    $(".list-group-item").on("click",handleNoteView)
-
+    };
+    $(".deleteButton").on("click", handleNoteDelete);
+    $(".note-title").on("click", handleNoteView);
+    $(".note-textarea").on("click", handleNoteView);
 };
 
-// Gets notes from the db and renders them to the sidebar
-var getAndRenderNotes = function() {
-    $.get("/api/notes").then(function(data){
-        renderNoteList(data)
-    })
-    renderActiveNote()
+var getAndRenderNotes = async function() {
+    console.log('rendering initiated');
+    let data = await $.get("/api/notes");
+    console.log(data)
+    renderNoteList(data);
+    renderActiveNote();
 };
 
-// $saveNoteBtn.on("click", handleNoteSave);
-$noteList.on("click", ".list-group-item", handleNoteView);
-// $newNoteBtn.on("click", handleNewNoteView);
-// $noteList.on("click", ".delete-note", handleNoteDelete);
-// $noteTitle.on("keyup", handleRenderSaveBtn);
-// $noteText.on("keyup", handleRenderSaveBtn);
+// $noteList.on("click", ".list-group-item", handleNoteView);
 
-// Gets and renders the initial list of notes
 getAndRenderNotes();

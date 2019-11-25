@@ -18,7 +18,9 @@ app.get("/notes", function(req, res) {
 });
 
 app.get("/api/notes", function(req, res) {
+    console.log("refresh list")
     noteData = JSON.parse(fs.readFileSync("db/db.json"));
+    console.log(noteData)
     res.json(noteData);
 });
 
@@ -32,8 +34,8 @@ app.post("/api/notes", function(req, res) {
 app.delete("/api/notes", function(req, res) {
     noteNumber = req.body.noteNumber;
     noteData = JSON.parse(fs.readFileSync("db/db.json"));
-    noteData.splice(noteNumber,1)
-    fs.writeFileSync("db/db.json",JSON.stringify(noteData))
+    noteData.splice(noteNumber,1);
+    fs.writeFileSync("db/db.json",JSON.stringify(noteData));
 });
 
 app.listen(PORT, function() {
