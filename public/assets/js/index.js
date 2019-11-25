@@ -67,9 +67,7 @@ var handleNoteSave = async function() {
 
 var handleNoteDelete = async function() {
     number = this.id.slice(this.id.length-1);
-    console.log(number)
     deleteNote(number);
-    console.log("time to render")
     getAndRenderNotes();
 };
 
@@ -110,9 +108,7 @@ var renderNoteList = function(noteData) {
 };
 
 var getAndRenderNotes = async function() {
-    console.log('rendering initiated');
     let data = await $.get("/api/notes");
-    console.log(data)
     renderNoteList(data);
     renderActiveNote();
 };

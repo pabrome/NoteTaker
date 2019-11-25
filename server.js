@@ -18,9 +18,7 @@ app.get("/notes", function(req, res) {
 });
 
 app.get("/api/notes", function(req, res) {
-    console.log("refresh list")
     noteData = JSON.parse(fs.readFileSync("db/db.json"));
-    console.log(noteData)
     res.json(noteData);
 });
 
