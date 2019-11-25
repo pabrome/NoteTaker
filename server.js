@@ -2,15 +2,13 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs")
 
-
 var app = express();
-var PORT = 8080;
+var PORT = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/public", express.static(__dirname + "/public"));
 
-//End Points
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "./public/index.html"));
 });
