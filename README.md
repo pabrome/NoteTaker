@@ -8,4 +8,4 @@ To view a saved note, the user simpy clicks on the Title or Text of a note in th
 
 Saved notes can be removed by clicking the "delete" button attached to every note. Please note that the current delete functionality is slow. Only one note can be deleted at a time and the user must refresh the page after clicking delete. Fix will be implemented soon.
 
-![Working Giphy](registration.gif)
+![Working Giphy](/public/media/demo.gif)

@@ -1,9 +1,3 @@
-var $noteTitle = $(".note-title");
-var $noteText = $(".note-textarea");
-var $saveNoteBtn = $(".save-note");
-var $newNoteBtn = $(".new-note");
-var $noteList = $(".list-container .list-group");
-
 var activeNote = {};
 
 var getNotes = function() {
@@ -107,12 +101,10 @@ var renderNoteList = function(noteData) {
     $(".note-textarea").on("click", handleNoteView);
 };
 
-var getAndRenderNotes = async function() {
+ async function getAndRenderNotes() {
     let data = await $.get("/api/notes");
     renderNoteList(data);
     renderActiveNote();
 };
-
-// $noteList.on("click", ".list-group-item", handleNoteView);
 
 getAndRenderNotes();
